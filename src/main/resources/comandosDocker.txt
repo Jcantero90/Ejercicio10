@@ -1,0 +1,1 @@
+docker run --network mynetwork -p 8080:8080 --name exercise10 -e spring.datasource.url=jdbc:postgresql://postgres_test:5432/postgres -e spring.datasource.password=contrasena spring-application

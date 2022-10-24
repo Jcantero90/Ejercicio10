@@ -1,0 +1,47 @@
+version: "3.8"
+
+services: #Servicios, es decir, los contenedores que vamos a crear
+
+  mispringbootService: #Nombre del servicio con el que vamos a trabajar.
+    container_name: exercise10
+    image: 10:0.0.1-SNAPSHOT
+    #    build:  #Indicamos que este contenedor se va a construrir a traves del Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: #Vamos a indicar una lista de los puertos que vamos a mapear para el contenedor
+      - "8080:8080" #PuertoDelHost:PuertoDelContenedor
+    networks:
+      - mynetwork
+
+  postgresService:
+    container_name: postgresContainer
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_HOST=127.0.0.1
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=root
+    networks:
+      - mynetwork
+    links:
+      - "mispringbootService"
+
+  pgadmin_webService:
+    container_name: pgadmin-web
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "80:80"
+    depends_on:
+      - postgresService
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
